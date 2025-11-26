@@ -1,10 +1,12 @@
 // src/components/UpdatePage.jsx
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate} from "react-router-dom";
 import { fetchPlayer, updatePlayer } from "./api";
 
 function UpdatePage() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [player, setPlayer] = useState(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -63,29 +65,31 @@ function UpdatePage() {
     }
   };
 
-  const handleValidate = () => {
-    if (!form.name.trim()) {
-      alert("이름은 비어 있을 수 없습니다.");
-      nameRef.current.focus();
-      return;
-    }
-    if (!form.height.trim()) {
-      alert("키는 비어 있을 수 없습니다.");
-      heightRef.current.focus();
-      return;
-    }
-    if (!form.weight.trim()) {
-      alert("몸무게는 비어 있을 수 없습니다.");
-      weightRef.current.focus();
-      return;
-    }
-    if (!form.number.trim()) {
-      alert("등번호는 비어 있을 수 없습니다.");
-      numberRef.current.focus();
-      return;
-    }
-    alert("유효성 검사 통과!");
-  };
+    const handleValidate = () => {
+      if (!form.name.trim()) {
+        alert("이름은 비어 있을 수 없습니다.");
+        nameRef.current.focus();
+        return false;
+      }
+      if (!form.height.trim()) {
+        alert("키는 비어 있을 수 없습니다.");
+        heightRef.current.focus();
+        return false;
+      }
+      if (!form.weight.trim()) {
+        alert("몸무게는 비어 있을 수 없습니다.");
+        weightRef.current.focus();
+        return false;
+      }
+      if (!form.number.trim()) {
+        alert("등번호는 비어 있을 수 없습니다.");
+        numberRef.current.focus();
+        return false;
+      }
+      alert("유효성 검사 통과!");
+      return true;
+    };
+
 
   return (
     <div className="container mt-4">
@@ -128,9 +132,20 @@ function UpdatePage() {
         onChange={handleChange}
       />
 
-      <button className="btn btn-secondary mt-2" onClick={handleValidate}>
-        유효성 체크
-      </button>
+      <div className="mt-3">
+        <button
+          className="btn btn-secondary"
+          onClick={() => {
+            const ok = handleValidate();
+            if (ok) {
+              navigate("/list");
+            }
+          }}
+        >
+          확인
+        </button>
+      </div>
+
     </div>
   );
 }
